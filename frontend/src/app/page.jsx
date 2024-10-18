@@ -1,23 +1,79 @@
 "use client";
 import Navbar from "@/components/navbar/Navbar";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
+  return (
+    <>
+      <Navbar />
+      <header className="bg-blue-600 text-white p-10 text-center">
+        <h1 className="text-4xl font-bold">Welcome to Our Finance Company</h1>
+        <p className="mt-4 text-lg">
+          Your trusted partner in achieving financial freedom.
+        </p>
+        <Button className="mt-6 text-white bg-blue-700 hover:bg-blue-800 py-2 px-4 rounded">
+          <Link href="/LoanApplication">Apply for a Loan</Link>
+        </Button>
+      </header>
 
-  const handleClick = () => {
-    
-  }
+      <section className="p-10 bg-gray-100">
+        <h2 className="text-3xl font-bold text-center mb-6">Why Choose Us?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded shadow">
+            <Image src="/path/to/image1.jpg" alt="Low Rates" width={300} height={200} className="mb-4 rounded" />
+            <h3 className="text-xl font-semibold">Low Interest Rates</h3>
+            <p className="mt-2">
+              We offer competitive interest rates that help you save money over time.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded shadow">
+            <Image src="/path/to/image2.jpg" alt="Flexible Terms" width={300} height={200} className="mb-4 rounded" />
+            <h3 className="text-xl font-semibold">Flexible Terms</h3>
+            <p className="mt-2">
+              Our loan terms are customizable to fit your unique financial situation.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded shadow">
+            <Image src="/path/to/image3.jpg" alt="Quick Approvals" width={300} height={200} className="mb-4 rounded" />
+            <h3 className="text-xl font-semibold">Quick Approvals</h3>
+            <p className="mt-2">
+              Get your loan approved in no time with our fast and efficient process.
+            </p>
+          </div>
+        </div>
+      </section>
 
-  return <>
-      <Navbar/>
-      <div className="flex justify-center items-center p-[40px]">
-          <Button
-           className="text-black font-normal text-l bg-gray-200 py-2 px-4 rounded-l" 
-           onClick={() => handleClick()} 
-          >
-            Apply
+      <section className="p-10">
+        <h2 className="text-3xl font-bold text-center mb-6">What Our Clients Say</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-100 p-6 rounded shadow">
+            <p className="italic">"Thanks to [Company Name], I was able to buy my first home!"</p>
+            <h4 className="font-bold mt-2">- Sarah J.</h4>
+          </div>
+          <div className="bg-gray-100 p-6 rounded shadow">
+            <p className="italic">"The loan process was so simple and fast. Highly recommend!"</p>
+            <h4 className="font-bold mt-2">- Michael T.</h4>
+          </div>
+        </div>
+      </section>
+
+      <section className="p-10 bg-gray-100">
+        <h2 className="text-3xl font-bold text-center mb-6">Contact Us</h2>
+        <form className="max-w-md mx-auto bg-white p-6 rounded shadow">
+          <TextField label="Name" variant="outlined" fullWidth className="mb-4" required />
+          <TextField label="Email" variant="outlined" type="email" fullWidth className="mb-4" required />
+          <TextField label="Message" variant="outlined" multiline rows={4} fullWidth className="mb-4" required />
+          <Button type="submit" variant="contained" color="primary">
+            Send Message
           </Button>
-      </div>
-  </>;
+        </form>
+      </section>
+
+      <footer className="bg-blue-600 text-white p-4 text-center">
+        <p>&copy; 2024 Our Finance Company. All Rights Reserved.</p>
+      </footer>
+    </>
+  );
 }
