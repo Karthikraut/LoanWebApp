@@ -46,12 +46,6 @@ const userSchema = new Schema({
     month_of_employment: {
         type: Number, // Month of employment (1-12)
         required: [true, "Month of employment is required"], // Validation message
-        min: 1,
-        max: 12
-    },
-    years_of_employment: {
-        type: Number, // Years of employment
-        required: [true, "Years of employment is required"], // Validation message
     },
     bank_name: {
         type: String, // Name of the bank

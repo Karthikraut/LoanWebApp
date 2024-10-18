@@ -1,24 +1,25 @@
 "use client";
 import React, { useState } from 'react';
 import { MenuItem, TextField, InputLabel, FormControl, Select, Button } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 const SignupProfile = () => {
+  const router =useRouter();
   const [formData, setFormData] = useState({
-    fullName: '',
+    full_name: '',
     dob: '',
     gender: '',
-    maritalStatus: '',
-    contactNo: '',
+    martial_status: '',
+    phone: '',
     email: '',
     password: '',
-    employmentStatus: '',
-    yearsOfEmployment: '',
-    annualIncome: '',
-    bankName: '',
-    accountNo: '',
-    ifcCode: '',
-    creditScore: '',
-    monthlyDebtPayment: '',
+    employment_status: '',
+    month_of_employment: '',
+    income: '',
+    bank_name: '',
+    ifsc_code: '',
+    credit_score: '',
+    
   });
 
   const handleChange = (e) => {
@@ -29,10 +30,30 @@ const SignupProfile = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    console.log('Form Data Submitted:', formData);
+    
+    // Simulate API registration call
+    try {
+      const response = await fetch('http://localhost:3001/createUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    });
+    
+      
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+      
+      const result = await response.json();
+      console.log('Registration Successful:', result);
+      router.push('/auth/sign-in/user')
+    } catch (error) {
+      console.error('Error during registration:', error);
+    }
   };
 
   return (
@@ -50,8 +71,8 @@ const SignupProfile = () => {
             {/* Full Name */}
             <TextField
               label="Full Name"
-              name="fullName"
-              value={formData.fullName}
+              name="full_name"
+              value={formData.full_name}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -92,23 +113,24 @@ const SignupProfile = () => {
             <FormControl fullWidth margin="normal">
               <InputLabel>Marital Status</InputLabel>
               <Select
-                name="maritalStatus"
-                value={formData.maritalStatus}
+                name="martial_status"
+                value={formData.martial_status}
                 onChange={handleChange}
                 required
               >
                 <MenuItem value="single">Single</MenuItem>
                 <MenuItem value="married">Married</MenuItem>
                 <MenuItem value="divorced">Divorced</MenuItem>
+                <MenuItem value="widowed">Widowed</MenuItem>
               </Select>
             </FormControl>
 
             {/* Contact Number */}
             <TextField
               label="Contact No."
-              name="contactNo"
+              name="phone"
               type="tel"
-              value={formData.contactNo}
+              value={formData.phone}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -152,8 +174,8 @@ const SignupProfile = () => {
             <FormControl fullWidth margin="normal">
               <InputLabel>Employment Status</InputLabel>
               <Select
-                name="employmentStatus"
-                value={formData.employmentStatus}
+                name="employment_status"
+                value={formData.employment_status}
                 onChange={handleChange}
                 required
               >
@@ -164,12 +186,12 @@ const SignupProfile = () => {
               </Select>
             </FormControl>
 
-            {/* Years of Employment (in months) */}
+            {/* Months of Employment (in months) */}
             <TextField
-              label="Years of Employment (Months)"
-              name="yearsOfEmployment"
+              label="Months of Employment (Months)"
+              name="month_of_employment"
               type="number"
-              value={formData.yearsOfEmployment}
+              value={formData.month_of_employment}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -180,9 +202,9 @@ const SignupProfile = () => {
             {/* Annual Income */}
             <TextField
               label="Annual Income"
-              name="annualIncome"
+              name="income"
               type="number"
-              value={formData.annualIncome}
+              value={formData.income}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -199,20 +221,8 @@ const SignupProfile = () => {
             {/* Bank Name */}
             <TextField
               label="Bank Name"
-              name="bankName"
-              value={formData.bankName}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              required
-            />
-
-            {/* Account Number */}
-            <TextField
-              label="Account Number"
-              name="accountNo"
-              value={formData.accountNo}
+              name="bank_name"
+              value={formData.bank_name}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -223,8 +233,8 @@ const SignupProfile = () => {
             {/* IFSC Code */}
             <TextField
               label="IFSC Code"
-              name="ifcCode"
-              value={formData.ifcCode}
+              name="ifsc_code"
+              value={formData.ifsc_code}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -235,9 +245,9 @@ const SignupProfile = () => {
             {/* Credit Score */}
             <TextField
               label="Credit Score"
-              name="creditScore"
+              name="credit_score"
               type="number"
-              value={formData.creditScore}
+              value={formData.credit_score}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -245,18 +255,6 @@ const SignupProfile = () => {
               required
             />
 
-            {/* Monthly Debt Payment */}
-            <TextField
-              label="Monthly Debt Payment"
-              name="monthlyDebtPayment"
-              type="number"
-              value={formData.monthlyDebtPayment}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              required
-            />
           </div>
         </div>
 
