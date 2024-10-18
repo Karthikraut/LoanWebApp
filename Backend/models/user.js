@@ -29,7 +29,7 @@ const userSchema = new Schema({
     },
     employment_status: {
         type: String, // e.g., employed, self-employed, unemployed
-        enum: ['employed', 'self-employed', 'unemployed', 'retired'], // Specify valid options
+        enum: ['full-time', 'self-employed', 'unemployed', 'part-time'], // Specify valid options
         required: [true, "Employment status is required"], // Validation message
     },
     income: {

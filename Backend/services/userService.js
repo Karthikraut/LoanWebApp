@@ -113,7 +113,6 @@ class UserService{
         if (!user) {
             throw new Error("User not found for the given token");
         }
-
         // Return the user's name
         return user;
     } catch (error) {
