@@ -5,8 +5,7 @@ const adminService = new AdminService(); // Updated service instance
 const create = async (req, res) => {
     try {
         const response = await adminService.create({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
+            full_name: req.body.full_name,
             email: req.body.email,
             phone: req.body.phone,
             password: req.body.password

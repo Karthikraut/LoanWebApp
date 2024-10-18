@@ -1,10 +1,6 @@
 const {Schema, model, default:mongoose}  =require("mongoose");
 const adminSchema = new Schema({
-    first_name: {
-        type: String,
-        required:"Name is required"
-    },
-    last_name: {
+    full_name: {
         type: String,
         required:"Name is required"
     },

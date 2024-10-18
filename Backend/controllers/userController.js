@@ -4,9 +4,15 @@ const userService = new UserService();
 
 const create = async (req,res) =>{
     try{
+         console.log(req.body);
         const response = await userService.create({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
+            full_name: req.body.full_name,
+            martial_status: req.body.martial_status,
+            month_of_employment: req.body.month_of_employment,
+            bank_name: req.body.bank_name,
+            dob: req.body.dob,
+            years_of_employment: req.body.years_of_employment,
+            ifsc_code: req.body.ifsc_code,
             email: req.body.email,
             phone: req.body.phone,
             password: req.body.password,
