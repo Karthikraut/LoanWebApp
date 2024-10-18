@@ -22,6 +22,10 @@ const loanSchema = new Schema({
         type: Number, // Requested tenure in months
         required: [true, "Requested tenure is required"], // Validation message
       },
+      model_interest_rate: {
+        type: Number, // Approved tenure in months
+        default: null, // Default value
+      },
       approved_tenure: {
         type: Number, // Approved tenure in months
         default: null, // Default value
