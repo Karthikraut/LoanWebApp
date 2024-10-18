@@ -1,26 +1,37 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   MenuItem,
-  TextField,
   InputLabel,
   FormControl,
   Select,
   Button,
+  TextField,
 } from "@mui/material";
+import { toast } from "react-hot-toast";
+import Link from "next/link";
+// Constants for personal and financial details (normally fetched from backend)
+const PERSONAL_DETAILS = {
+  fullName: "John Doe",
+  email: "johndoe@example.com",
+  phoneNumber: "+1234567890",
+};
+
+const FINANCIAL_DETAILS = {
+  creditScore: 750,
+  employmentStatus: "Employed", // Can be: "Employed", "Self-employed", "Unemployed"
+  monthlyIncome: 5000,
+  monthlyDebtPayments: 200,
+};
 
 const LoanApplication = () => {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     loanType: "",
     loanAmount: "",
     tenure: "",
-    creditScore: "",
-    employmentStatus: "",
-    monthlyIncome: "",
-    monthlyDebtPayments: "",
-    fullName: "",
-    email: "",
-    phoneNumber: "",
   });
 
   const handleChange = (e) => {
@@ -33,8 +44,46 @@ const LoanApplication = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    console.log("Form Data Submitted:", formData);
+
+    // Validate form data (ensure all required fields are filled)
+    if (isFormValid()) {
+      // Handle form submission logic, including constants for personal and financial details
+      console.log("Form Data Submitted:", {
+        ...formData,
+        ...PERSONAL_DETAILS,
+        ...FINANCIAL_DETAILS,
+      });
+
+      // Show success toast
+      toast.success("Form submitted successfully", {
+        duration: 4000,
+        position: "top-right",
+        icon: "✅",
+        className: "custom-toast-success",
+      });
+      router.push("/")
+    } else {
+      // Show error toast if form is invalid
+      toast.error("Please fill out all required fields.", {
+        duration: 4000,
+        position: "top-right",
+        icon: "❌",
+        className: "custom-toast-error",
+      });
+    }
+  };
+
+  const isFormValid = () => {
+    // Implement your form validation logic here
+    // Return true if all required fields are filled, otherwise return false
+
+    return (
+     
+      formData.loanType &&
+      formData.loanAmount &&
+      formData.tenure 
+      
+    );
   };
 
   return (
@@ -49,56 +98,72 @@ const LoanApplication = () => {
 
         {/* Form Grid for 2 Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Full Name */}
-          <TextField
-            label="Full Name"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            required
-          />
+          {/* Full Name - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Full Name</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              {PERSONAL_DETAILS.fullName}
+            </p>
+          </div>
 
-          {/* Email */}
-          <TextField
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            required
-          />
+          {/* Email - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Email</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              {PERSONAL_DETAILS.email}
+            </p>
+          </div>
 
-          {/* Phone Number */}
-          <TextField
-            label="Phone Number"
-            name="phoneNumber"
-            type="tel"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            required
-          />
+          {/* Phone Number - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Phone Number</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              {PERSONAL_DETAILS.phoneNumber}
+            </p>
+          </div>
+
+          {/* Credit Score - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Credit Score</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              {FINANCIAL_DETAILS.creditScore}
+            </p>
+          </div>
+
+          {/* Employment Status - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Employment Status</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              {FINANCIAL_DETAILS.employmentStatus}
+            </p>
+          </div>
+
+          {/* Monthly Income - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Monthly Income</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              ${FINANCIAL_DETAILS.monthlyIncome}
+            </p>
+          </div>
+
+          {/* Monthly Debt Payments - Static Display */}
+          <div className="flex flex-col">
+            <label className="text-gray-700">Monthly Debt Payments</label>
+            <p className="bg-gray-100 p-2 rounded-md">
+              ${FINANCIAL_DETAILS.monthlyDebtPayments}
+            </p>
+          </div>
 
           {/* Loan Type */}
           <FormControl fullWidth margin="normal">
-            <InputLabel id="demo-simple-select-label">Loan Type</InputLabel>
+            <InputLabel id="loan-type-label">Loan Type</InputLabel>
             <Select
-             labelId="demo-simple-select-label"
-              id="demo-simple-select"
-             
+              labelId="loan-type-label"
+              name="loanType"
               value={formData.loanType}
               onChange={handleChange}
               required
               label="Loan Type"
-
             >
               <MenuItem value="home">Home Loan</MenuItem>
               <MenuItem value="personal">Personal Loan</MenuItem>
@@ -106,11 +171,10 @@ const LoanApplication = () => {
               <MenuItem value="education">Education Loan</MenuItem>
             </Select>
           </FormControl>
-         
 
           {/* Loan Amount */}
-          <TextField
 
+          <TextField
             label="Loan Amount"
             name="loanAmount"
             type="number"
@@ -120,82 +184,24 @@ const LoanApplication = () => {
             margin="normal"
             variant="outlined"
             required
+            inputProps={{ min: 0 }}
           />
 
           {/* Tenure */}
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Tenure (Years)</InputLabel>
-            <Select
-            labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Tenure (Years)"
-              value={formData.tenure}
-              onChange={handleChange}
-              required
-            >
-              <MenuItem value={1}>1 Year</MenuItem>
-              <MenuItem value={3}>3 Years</MenuItem>
-              <MenuItem value={5}>5 Years</MenuItem>
-              <MenuItem value={10}>10 Years</MenuItem>
-            </Select>
-          </FormControl>
 
-          {/* Credit Score */}
           <TextField
-            label="Credit Score"
-            name="creditScore"
+            label="Tenure (in months)"
+            name="tenure"
             type="number"
-            value={formData.creditScore}
+            value={formData.tenure}
             onChange={handleChange}
             fullWidth
             margin="normal"
             variant="outlined"
             required
+            inputProps={{ min: 0 }}
           />
 
-          {/* Employment Status */}
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Employment Status</InputLabel>
-            <Select
-
-            labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Employment Status"
-              value={formData.employmentStatus}
-              onChange={handleChange}
-              required
-            >
-              <MenuItem value="employed">Employed</MenuItem>
-              <MenuItem value="self-employed">Self-employed</MenuItem>
-              <MenuItem value="unemployed">Unemployed</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* Monthly Income */}
-          <TextField
-            label="Monthly Income"
-            name="monthlyIncome"
-            type="number"
-            value={formData.monthlyIncome}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            required
-          />
-
-          {/* Monthly Debt Payments */}
-          <TextField
-            label="Monthly Debt Payments"
-            name="monthlyDebtPayments"
-            type="number"
-            value={formData.monthlyDebtPayments}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            required
-          />
         </div>
 
         {/* Submit Button */}
@@ -205,6 +211,7 @@ const LoanApplication = () => {
           variant="contained"
           color="primary"
           className="mt-6"
+          onClick={handleSubmit}
         >
           Submit Application
         </Button>
