@@ -64,7 +64,8 @@ export default function StickyHeadTable() {
       const updatedUsers = await Promise.all(
         users.map(async (user) => {
           const {model_probability,loan_status} = await getApplicationStatus(user._id);
-          return { ...user, model_probability,loan_status}; // Add the application status to the user data
+          const prob = (model_probability*100).toFixed(2)
+          return { ...user, model_probability: prob,loan_status}; // Add the application status to the user data
         })
       );
 
@@ -125,7 +126,7 @@ export default function StickyHeadTable() {
                         if (column.id === 'applicationStatus') {
                           // Safely access loan_status and model_probability from the applicationStatus object
                           value = row.applicationStatus ? 
-                            `${row.applicationStatus.loan_status} (ML Score: ${row.applicationStatus.model_probability})` 
+                            `${row.applicationStatus.loan_status} (ML Score: ${(row.applicationStatus.model_probability*100).toFixed(2)})%` 
                             : 'Pending';
                         }
 

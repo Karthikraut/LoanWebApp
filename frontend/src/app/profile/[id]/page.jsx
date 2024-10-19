@@ -76,7 +76,7 @@ const UserProfile = ({ params }) => {
                         <span className="mx-2">|</span> {/* Add space between entities */}
                         {`Status: ${loan.loan_status}`}
                         <span className="mx-2">|</span>
-                        {`                    Probability of Laon Default : ${loan.model_probability}`}
+                        {`                    Probability of Loan Default : ${(loan.model_probability*100).toFixed(2)}%`}
                         </span>
                     }
                     secondary={
