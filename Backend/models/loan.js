@@ -1,6 +1,6 @@
 const {Schema, model, default:mongoose}  =require("mongoose");
 const loanSchema = new Schema({
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId, // Reference to the user's ObjectId
         ref: 'User', // Reference to the User model
         required: true, // Ensure this field is required
@@ -9,7 +9,7 @@ const loanSchema = new Schema({
         type: Number, // Loan amount
         required: [true, "Loan amount is required"], // Validation message
       },
-      loan_purpose: {
+      loan_type: {
         type: String, // Purpose of the loan
         required: [true, "Loan purpose is required"], // Validation message
       },
@@ -21,6 +21,14 @@ const loanSchema = new Schema({
       requested_tenure: {
         type: Number, // Requested tenure in months
         required: [true, "Requested tenure is required"], // Validation message
+      },
+      model_status: {
+        type: Boolean,
+        default: false
+      },
+      model_probability:{
+        type: Number,
+        default: null,
       },
       model_interest_rate: {
         type: Number, // Approved tenure in months

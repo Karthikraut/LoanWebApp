@@ -6,12 +6,12 @@ const Admin = require('../models/admin'); // Assuming the Admin model exists
 const createLoan = async (req, res) => {
     try {
         // Extract loan details from the request body
-        const { user_id, loan_amount, loan_purpose, requested_tenure } = req.body;
-
+        const { userId, loan_amount, loan_type, requested_tenure } = req.body;
+        console.log("Request Body: ",req.body);
         // Check if the user exists
-        const user = await User.findById(user_id);
+        const user = await User.findById(userId);
 
-        console.log(user_id," ",user);
+        console.log(userId, " ", user);
         if (!user) {
             return res.status(404).json({
                 message: "User not found",
@@ -21,9 +21,9 @@ const createLoan = async (req, res) => {
 
         // Create a new loan object
         const newLoan = new Loan({
-            user_id,
+            userId,
             loan_amount,
-            loan_purpose,
+            loan_type,
             requested_tenure
         });
 
@@ -101,7 +101,45 @@ const updateLoan = async (req, res) => {
     }
 };
 
+
+// Function to get loans by user ID
+const getLoanByUserId = async (req, res) => {
+    try {
+        // Extract user ID from the request parameters
+        const { userId } = req.params; // Assuming userId is passed as a URL parameter
+        console.log("User Id: ",userId);
+        // Fetch loans associated with the user
+        const loans = await Loan.find({ userId });
+        console.log("LOAANANANAN: ",loans);
+        // Check if loans exist for the user
+        if (loans.length === 0) {
+            return res.status(404).json({
+                message: "No loans found for this user",
+                success: false
+            });
+        }
+
+        // Return success response with the loan data
+        return res.status(200).json({
+            message: "Loans fetched successfully",
+            data: loans,
+            success: true
+        });
+    } catch (error) {
+        console.error("Error fetching loans by user ID:", error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+
+
+
 module.exports = {
     createLoan,
-    updateLoan
+    updateLoan,
+    getLoanByUserId
 };
