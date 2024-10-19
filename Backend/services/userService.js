@@ -46,7 +46,7 @@ class UserService{
             //Step 3 -> if password match then create a token and sent it to the user
             const newJWT = this.createToken({email: user.email, id: user.id});
             console.log("NEW TOKEN:- ", newJWT);
-            return newJWT;
+            return user;
        } catch (error) {
             console.log(error);
             console.log("Error At Sign IN Process.")

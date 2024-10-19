@@ -102,10 +102,44 @@ const updateLoan = async (req, res) => {
 };
 
 
+// Function to get loans by user ID
+const getLoanByUserId = async (req, res) => {
+    try {
+        // Extract user ID from the request parameters
+        const { userId } = req.params; // Assuming userId is passed as a URL parameter
+        console.log("User Id: ",userId);
+        // Fetch loans associated with the user
+        const loans = await Loan.find({ userId });
+
+        // Check if loans exist for the user
+        if (loans.length === 0) {
+            return res.status(404).json({
+                message: "No loans found for this user",
+                success: false
+            });
+        }
+
+        // Return success response with the loan data
+        return res.status(200).json({
+            message: "Loans fetched successfully",
+            data: loans,
+            success: true
+        });
+    } catch (error) {
+        console.error("Error fetching loans by user ID:", error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+
 
 
 module.exports = {
     createLoan,
     updateLoan,
-   
+    getLoanByUserId
 };

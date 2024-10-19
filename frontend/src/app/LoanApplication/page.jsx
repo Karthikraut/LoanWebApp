@@ -10,18 +10,19 @@ import {
   TextField,
 } from "@mui/material";
 import { toast } from "react-hot-toast";
+import { useUser } from "../utils/userContext";
 
 const LoanApplication = () => {
   const router = useRouter();
-
+  const {user} = useUser();
   const [formData, setFormData] = useState({
     loan_type: "",
     loan_amount: "",
     requested_tenure: "",
   });
-  
+  console.log("User ID: ", user.userId);
   const [userDetails, setUserDetails] = useState(null);
-  const userId = "6712f166d37db81a1891f068"; // Replace this with actual user ID logic
+  const userId = user.userId; // Replace this with actual user ID logic
 
   useEffect(() => {
     const fetchUserDetails = async () => {

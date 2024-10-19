@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Box, TextField, Button, Typography, Stack, IconButton, InputAdornment, Link, Alert } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {useRouter} from 'next/navigation';
-
+import { useUser } from '@/app/utils/userContext';
 
 const UserLogin = () => {
   const router = useRouter();
@@ -12,6 +12,7 @@ const UserLogin = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const {setUser} = useUser();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -37,6 +38,7 @@ const UserLogin = () => {
       const result = await response.json();
       setSuccessMessage('Login successful!');
       setErrorMessage('');
+      setUser({name: result.data.full_name, password: result.data.password, email: result.data.email, userId: result.data._id});
       
       // Handle successful login (e.g., save tokens, redirect)
       console.log('Login Successful:', result);
