@@ -1,10 +1,54 @@
 "use client";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/navbar/Navbar";
 import { Button, TextField } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const token = Cookies.get("token");
+  //     console.log("hello", token);
+  
+  //     if (token) {
+  //       console.log("FFDAKJ");
+  
+  //       try {
+  //         const response = await fetch("http://localhost:3001/isAuth", {
+  //           method: "GET",
+  //           credentials: "include", // Ensure you're sending cookies along with the request
+  //           headers: {
+  //             "Authorization": `Bearer ${token}`, // Send token as Authorization header
+  //           },
+  //         });
+  
+  //         // Check if the response is OK (status 200–299)
+  //         if (!response.ok) {
+  //           throw new Error(`HTTP error! status: ${response.status}`);
+  //         }
+  
+  //         const data = await response.json();
+  //         setIsAuthenticated(true);
+  //         setUserName(data.data.name); // Assuming data structure is { data: { name: 'John Doe' } }
+  //         console.log("DATA: ", data);
+  //       } catch (error) {
+  //         console.error("Error during fetch: ", error);
+  //       }
+  
+  //     } else {
+  //       setIsAuthenticated(false);
+  //       console.log("Rommmm");
+  //     }
+  //   };
+  
+  //   checkAuth();
+  // }, []);
+  
   return (
     <>
       <Navbar />
@@ -13,9 +57,18 @@ export default function Home() {
         <p className="mt-4 text-lg">
           Your trusted partner in achieving financial freedom.
         </p>
-        <Button className="mt-6 text-white bg-blue-700 hover:bg-blue-800 py-2 px-4 rounded">
-          <Link href="/LoanApplication">Apply for a Loan</Link>
-        </Button>
+        {isAuthenticated ? (
+          <div>
+            <p className="mt-4">Hello, {userName}!</p>
+            <Button className="mt-6 text-white bg-blue-700 hover:bg-blue-800 py-2 px-4 rounded">
+              <Link href="/profile">Profile</Link>
+            </Button>
+          </div>
+        ) : (
+          <Button className="mt-6 text-white bg-blue-700 hover:bg-blue-800 py-2 px-4 rounded">
+            <Link href="/LoanApplication">Loan Application</Link>
+          </Button>
+        )}
       </header>
 
       <section className="p-10 bg-gray-100">

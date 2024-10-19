@@ -1,6 +1,9 @@
 const UserService = require('../services/userService');
 const cookies =require('cookie-parser')
 const userService = new UserService();
+const Loan = require('../models/loan'); // Assuming the Loan model is in the models folder
+const User = require('../models/user'); // Assuming the User model exists
+const Admin = require('../models/admin'); 
 
 const create = async (req,res) =>{
     try{
@@ -89,11 +92,67 @@ const isAuthenticated = async (req,res) =>{
     }
 }
 
+// Function to get a user by their ID
+const getUserById = async (req, res) => {
+    try {
+        // Extract user ID from request parameters
+        const id = req.body.userId;
+        console.log("ID: ",id);
+        // Fetch the user by their ID
+        const user = await User.findById(id);
+        console.log("User: ",user);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        // Return success response with the user data
+        return res.status(200).json({
+            message: "User fetched successfully",
+            data: user,
+            success: true
+        });
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+// Function to get all users
+const getAllUsers = async (req, res) => {
+    try {
+        // Fetch all users from the database
+        const users = await User.find();
+
+        // Return success response with users data
+        return res.status(200).json({
+            message: "Users fetched successfully",
+            data: users,
+            success: true
+        });
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            success: false,
+            error: error.message
+        });
+    }
+};
+
 
 
 
 module.exports= {
     create,
     signIn,
-    isAuthenticated
+    isAuthenticated,
+    getAllUsers, // Export the function to get all users
+    getUserById  // Export the function to get a user by their ID
 }

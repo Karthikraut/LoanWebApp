@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   MenuItem,
@@ -10,29 +10,40 @@ import {
   TextField,
 } from "@mui/material";
 import { toast } from "react-hot-toast";
-import Link from "next/link";
-// Constants for personal and financial details (normally fetched from backend)
-const PERSONAL_DETAILS = {
-  fullName: "John Doe",
-  email: "johndoe@example.com",
-  phoneNumber: "+1234567890",
-};
-
-const FINANCIAL_DETAILS = {
-  creditScore: 750,
-  employmentStatus: "Employed", // Can be: "Employed", "Self-employed", "Unemployed"
-  monthlyIncome: 5000,
-  monthlyDebtPayments: 200,
-};
 
 const LoanApplication = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    loanType: "",
-    loanAmount: "",
-    tenure: "",
+    loan_type: "",
+    loan_amount: "",
+    requested_tenure: "",
   });
+  
+  const [userDetails, setUserDetails] = useState(null);
+  const userId = "6712f166d37db81a1891f068"; // Replace this with actual user ID logic
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/getById`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ userId })
+        }); // Use query parameter
+        const data = await res.json();
+        console.log("Data: ",data.data);
+        setUserDetails(data.data);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        toast.error("Error fetching user details");
+      }
+    };
+
+    fetchUserDetails();
+  }, [userId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,49 +53,41 @@ const LoanApplication = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form data (ensure all required fields are filled)
     if (isFormValid()) {
-      // Handle form submission logic, including constants for personal and financial details
-      console.log("Form Data Submitted:", {
-        ...formData,
-        ...PERSONAL_DETAILS,
-        ...FINANCIAL_DETAILS,
-      });
+      try {
+        const response = await fetch('http://localhost:3001/loan/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            userId, // Include userId in the request
+          }),
+        });
 
-      // Show success toast
-      toast.success("Form submitted successfully", {
-        duration: 4000,
-        position: "top-right",
-        icon: "✅",
-        className: "custom-toast-success",
-      });
-      router.push("/")
+        if (!response.ok) throw new Error('Failed to submit application');
+
+        const result = await response.json();
+        toast.success("Form submitted successfully");
+        router.push("/");
+      } catch (error) {
+        console.error("Error submitting loan application:", error);
+        toast.error("Failed to submit application");
+      }
     } else {
-      // Show error toast if form is invalid
-      toast.error("Please fill out all required fields.", {
-        duration: 4000,
-        position: "top-right",
-        icon: "❌",
-        className: "custom-toast-error",
-      });
+      toast.error("Please fill out all required fields.");
     }
   };
 
   const isFormValid = () => {
-    // Implement your form validation logic here
-    // Return true if all required fields are filled, otherwise return false
-
-    return (
-     
-      formData.loanType &&
-      formData.loanAmount &&
-      formData.tenure 
-      
-    );
+    return formData.loan_type && formData.loan_amount && formData.requested_tenure;
   };
+
+  if (!userDetails) return <p>Loading...</p>;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -102,7 +105,7 @@ const LoanApplication = () => {
           <div className="flex flex-col">
             <label className="text-gray-700">Full Name</label>
             <p className="bg-gray-100 p-2 rounded-md">
-              {PERSONAL_DETAILS.fullName}
+              {userDetails.full_name}
             </p>
           </div>
 
@@ -110,7 +113,7 @@ const LoanApplication = () => {
           <div className="flex flex-col">
             <label className="text-gray-700">Email</label>
             <p className="bg-gray-100 p-2 rounded-md">
-              {PERSONAL_DETAILS.email}
+              {userDetails.email}
             </p>
           </div>
 
@@ -118,39 +121,7 @@ const LoanApplication = () => {
           <div className="flex flex-col">
             <label className="text-gray-700">Phone Number</label>
             <p className="bg-gray-100 p-2 rounded-md">
-              {PERSONAL_DETAILS.phoneNumber}
-            </p>
-          </div>
-
-          {/* Credit Score - Static Display */}
-          <div className="flex flex-col">
-            <label className="text-gray-700">Credit Score</label>
-            <p className="bg-gray-100 p-2 rounded-md">
-              {FINANCIAL_DETAILS.creditScore}
-            </p>
-          </div>
-
-          {/* Employment Status - Static Display */}
-          <div className="flex flex-col">
-            <label className="text-gray-700">Employment Status</label>
-            <p className="bg-gray-100 p-2 rounded-md">
-              {FINANCIAL_DETAILS.employmentStatus}
-            </p>
-          </div>
-
-          {/* Monthly Income - Static Display */}
-          <div className="flex flex-col">
-            <label className="text-gray-700">Monthly Income</label>
-            <p className="bg-gray-100 p-2 rounded-md">
-              ${FINANCIAL_DETAILS.monthlyIncome}
-            </p>
-          </div>
-
-          {/* Monthly Debt Payments - Static Display */}
-          <div className="flex flex-col">
-            <label className="text-gray-700">Monthly Debt Payments</label>
-            <p className="bg-gray-100 p-2 rounded-md">
-              ${FINANCIAL_DETAILS.monthlyDebtPayments}
+              {userDetails.phone}
             </p>
           </div>
 
@@ -159,8 +130,8 @@ const LoanApplication = () => {
             <InputLabel id="loan-type-label">Loan Type</InputLabel>
             <Select
               labelId="loan-type-label"
-              name="loanType"
-              value={formData.loanType}
+              name="loan_type"
+              value={formData.loan_purpose}
               onChange={handleChange}
               required
               label="Loan Type"
@@ -173,12 +144,11 @@ const LoanApplication = () => {
           </FormControl>
 
           {/* Loan Amount */}
-
           <TextField
             label="Loan Amount"
-            name="loanAmount"
+            name="loan_amount"
             type="number"
-            value={formData.loanAmount}
+            value={formData.loan_amount}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -187,13 +157,12 @@ const LoanApplication = () => {
             inputProps={{ min: 0 }}
           />
 
-          {/* Tenure */}
-
+          {/* requested_tenure */}
           <TextField
-            label="Tenure (in months)"
-            name="tenure"
+            label="requested_tenure (in months)"
+            name="requested_tenure"
             type="number"
-            value={formData.tenure}
+            value={formData.requested_tenure}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -201,7 +170,6 @@ const LoanApplication = () => {
             required
             inputProps={{ min: 0 }}
           />
-
         </div>
 
         {/* Submit Button */}
@@ -211,7 +179,6 @@ const LoanApplication = () => {
           variant="contained"
           color="primary"
           className="mt-6"
-          onClick={handleSubmit}
         >
           Submit Application
         </Button>

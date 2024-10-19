@@ -6,12 +6,12 @@ const Admin = require('../models/admin'); // Assuming the Admin model exists
 const createLoan = async (req, res) => {
     try {
         // Extract loan details from the request body
-        const { user_id, loan_amount, loan_purpose, requested_tenure } = req.body;
-
+        const { userId, loan_amount, loan_type, requested_tenure } = req.body;
+        console.log("Request Body: ",req.body);
         // Check if the user exists
-        const user = await User.findById(user_id);
+        const user = await User.findById(userId);
 
-        console.log(user_id," ",user);
+        console.log(userId, " ", user);
         if (!user) {
             return res.status(404).json({
                 message: "User not found",
@@ -21,9 +21,9 @@ const createLoan = async (req, res) => {
 
         // Create a new loan object
         const newLoan = new Loan({
-            user_id,
+            userId,
             loan_amount,
-            loan_purpose,
+            loan_type,
             requested_tenure
         });
 
@@ -101,7 +101,11 @@ const updateLoan = async (req, res) => {
     }
 };
 
+
+
+
 module.exports = {
     createLoan,
-    updateLoan
+    updateLoan,
+   
 };
