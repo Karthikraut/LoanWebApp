@@ -2,15 +2,15 @@
 import { useState } from 'react';
 import { Box, TextField, Button, Typography, Stack, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import Cookies from 'js-cookie'; // For setting cookies on the client
-
-
+import { useUser } from '@/app/utils/userContext';
+import { useRouter } from 'next/navigation';
 const AdminLogin = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  
+  const {setUser} = useUser();  
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -18,7 +18,7 @@ const AdminLogin = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:3001/signin", {
+      const response = await fetch("http://localhost:3001/admin/signIn", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -27,18 +27,9 @@ const AdminLogin = () => {
       });
 
       const data = await response.json();
-      setUser({email: data.email, password: data.password});
-
-      if (data.success) {
-        // Store the token in a cookie using js-cookie
-        Cookies.set('token', data.data, { expires: 7 }); // Token is stored for 7 days
-        console.log("Login successful", data.data);
-
-        // Redirect to the admin dashboard or handle login success as needed
-        window.location.href = '/admin-dashboard'; // Example of redirect after successful login
-      } else {
-        setErrorMessage(data.message || "Failed to sign in");
-      }
+      console.log("Data:-- ",data);
+      setUser({email: data.data.email, password: data.data.password});
+      router.push("/admin")
     } catch (error) {
       console.error("Error signing in:", error);
       setErrorMessage("Something went wrong. Please try again later.");

@@ -36,12 +36,18 @@ class AdminRepository{
 
     async getByEmail(emailId) {
         try {
-            const admin = await Admin.findOne({ email: emailId });
-            return admin;
-        } catch (error) {
-            console.log("Something went wrong at repository layer.");
-            throw error;
-        }
+            // Find the admin by email
+            const admin = await Admin.findOne({ email });
+      
+            // Check if the admin exists and the password matches
+            if (!admin || admin.password !== password) {
+              throw new Error('Invalid email or password');
+            }
+      
+            return admin; // Return the admin document if the email and password are valid
+          } catch (error) {
+            throw new Error(`Error fetching admin: ${error.message}`);
+          }
     }
 }
 

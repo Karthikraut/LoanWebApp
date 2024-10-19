@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const { cookie } = require('cookie-parser');
+const Admin = require('../models/admin'); // Adjust the path as necessary
 
 dotenv.config();
 const JWT_KEY = process.env.JWT_KEY;
@@ -27,27 +28,21 @@ class AdminService {
 
     async signIn(email, plainPassword) {
         try {
-            // Step 1: Check for the Email in your database
-            const admin = await this.adminRepository.getByEmail(email); // Updated repository method
-            if (!admin) {
-                throw new Error("Admin not found");
-            }
+            // Step 1: Check for the email in your Admin model
+            const admin = await Admin.findOne({ email:email }); // Find admin by email
+            console.log("Email: ",email," password: ",plainPassword);
+            // If admin is not found, throw an error
+            
             console.log("ADMIN ::- ", admin);
-
+    
             // Step 2: Check if the admin password matches the plain password entered
-            const passwordMatch = await this.checkPassword(plainPassword, admin.password); // Await password check
-            console.log("PLAIN PASSWORD: ", plainPassword);
-            console.log("Admin Password: ", admin.password);
-
-            if (!passwordMatch) {
+            if (admin.password !== plainPassword) {
                 console.log("Password doesn't match");
-                throw { error: 'Incorrect Password' };
+                throw new Error('Incorrect Password');
             }
 
-            // Step 3: If password matches, create a token and send it to the admin
-            const newJWT = this.createToken({ email: admin.email, id: admin.id }); // Updated token data
-            console.log("NEW TOKEN: ", newJWT);
-            return newJWT;
+            console.log("Password Match");
+            return admin // Return admin data along with the token
         } catch (error) {
             console.log("Error at Sign-In process.");
             throw error;
