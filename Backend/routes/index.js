@@ -11,7 +11,7 @@ router.use('/isAuth',isAuthenticated);
 
 router.use('/admin',adminRoutes);
 router.use('/getAllUsers',getAllUsers);
-router.use('/getById',getUserById);
+router.use('/getById/:id',getUserById);
 router.use('/loan',loanRoutes);
 
 module.exports = router;

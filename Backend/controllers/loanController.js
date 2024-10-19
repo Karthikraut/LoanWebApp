@@ -110,7 +110,7 @@ const getLoanByUserId = async (req, res) => {
         console.log("User Id: ",userId);
         // Fetch loans associated with the user
         const loans = await Loan.find({ userId });
-
+        console.log("LOAANANANAN: ",loans);
         // Check if loans exist for the user
         if (loans.length === 0) {
             return res.status(404).json({

@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { Box, TextField, Button, Typography, Stack, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Cookies from 'js-cookie'; // For setting cookies on the client
-import { useUser } from '@/app/utils/userContext';
+
 
 const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [setUser] = useUser();
+  
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);

@@ -17,6 +17,7 @@ export default function Navbar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const userId =user.userId;
 
   const isAuthenticated = user.email && user.password;
 
@@ -37,7 +38,7 @@ export default function Navbar() {
         {isAuthenticated ? (
           <div>
             <Button className="mt-6 text-white bg-blue-700 hover:bg-blue-800 py-2 px-4 rounded">
-              <Link href="/profile">Profile</Link>
+              <Link href={`/profile/${userId}`}>Profile</Link>
             </Button>
           </div>
         ) : (

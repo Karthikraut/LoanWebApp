@@ -27,15 +27,9 @@ const LoanApplication = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/getById`,{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ userId })
-        }); // Use query parameter
+        const res = await fetch(`http://localhost:3001/getById/${userId}`); // Use query parameter
         const data = await res.json();
-        console.log("Data: ",data.data);
+        console.log("Data: ",data);
         setUserDetails(data.data);
       } catch (error) {
         console.error("Error fetching user details:", error);
