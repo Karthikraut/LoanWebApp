@@ -19,7 +19,7 @@ const columns = [
   { id: 'email', label: 'Email ID', minWidth: 170 },
   { id: 'dob', label: 'DOB', minWidth: 50, align: 'right' },
   { id: 'applicationStatus', label: 'Application Status', minWidth: 170 },
-  { id: 'mlScore', label: 'ML Score', minWidth: 100, align: 'right' },
+  { id: 'model_probability', label: 'ML Score', minWidth: 100, align: 'right' },
   { id: 'view', label: 'View', minWidth: 50 },
 ];
 
@@ -42,14 +42,15 @@ export default function StickyHeadTable() {
 
   const getApplicationStatus = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/loan/user/${userId}`);
+      const response = await fetch(`http://localhost:3001/loan/user/${userId}`);
       const data = await response.json();
-      const { loan_status, model_probability } = data;
-
+      console.log("DATA:- ",data.data);
+      const { loan_status, model_probability } = data.data[0];
+      console.log("Loan stauts: ",loan_status,"Model_prob: ",model_probability);
       return { loan_status, model_probability };
     } catch (error) {
       console.error("Error fetching application status:", error);
-      return "Unknown";
+      return { loan_status: 'Pending', model_probability: 'N/A' }; // Return default values in case of error
     }
   };
 
@@ -62,8 +63,8 @@ export default function StickyHeadTable() {
       // Fetch application status for each user
       const updatedUsers = await Promise.all(
         users.map(async (user) => {
-          const applicationStatus = await getApplicationStatus(user._id);
-          return { ...user, applicationStatus }; // Add the application status to the user data
+          const {model_probability,loan_status} = await getApplicationStatus(user._id);
+          return { ...user, model_probability,loan_status}; // Add the application status to the user data
         })
       );
 
@@ -117,13 +118,21 @@ export default function StickyHeadTable() {
               {rows.length > 0 ? (
                 rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}> {/* Use row._id here */}
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                       {columns.map((column) => {
-                        const value = row[column.id];
+                        let value = row[column.id];
+                        
+                        if (column.id === 'applicationStatus') {
+                          // Safely access loan_status and model_probability from the applicationStatus object
+                          value = row.applicationStatus ? 
+                            `${row.applicationStatus.loan_status} (ML Score: ${row.applicationStatus.model_probability})` 
+                            : 'Pending';
+                        }
+
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {column.id === 'view' ? (
-                              <IconButton onClick={() => handleViewClick(row._id)}> {/* Use row._id here */}
+                              <IconButton onClick={() => handleViewClick(row._id)}>
                                 <VisibilityIcon />
                               </IconButton>
                             ) : (
